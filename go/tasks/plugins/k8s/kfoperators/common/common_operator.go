@@ -176,7 +176,7 @@ func OverrideDefaultContainerName(taskCtx pluginsCore.TaskExecutionContext, podS
 	// https://github.com/flyteorg/flyteplugins/blob/209c52d002b4e6a39be5d175bc1046b7e631c153/go/tasks/pluginmachinery/flytek8s/container_helper.go#L116
 	flyteDefaultContainerName := taskCtx.TaskExecutionMetadata().GetTaskExecutionID().GetGeneratedName()
 	for idx, c := range podSpec.Containers {
-		if c.Name == flyteDefaultContainerName {
+		if c.Name == flyteDefaultContainerName || c.Name == "primary" {
 			podSpec.Containers[idx].Name = defaultContainerName
 			return
 		}
