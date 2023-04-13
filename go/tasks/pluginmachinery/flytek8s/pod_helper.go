@@ -132,11 +132,6 @@ func BuildRawPod(ctx context.Context, tCtx pluginsCore.TaskExecutionContext) (*v
 	}
 	primaryContainerName := ""
 
-	fmt.Print("\n")
-	fmt.Println("podSpec in BuildRawPod at the beginning: ")
-	podSpecYAML, _ := yaml.Marshal(podSpec)
-	fmt.Println(string(podSpecYAML))
-
 	switch target := taskTemplate.GetTarget().(type) {
 	case *core.TaskTemplate_Container:
 		fmt.Println("target is a container")
@@ -159,15 +154,25 @@ func BuildRawPod(ctx context.Context, tCtx pluginsCore.TaskExecutionContext) (*v
 				"Pod tasks with task type version > 1 should specify their target as a K8sPod with a defined pod spec")
 		}
 
+		fmt.Print("\n")
+		fmt.Println("incoming podSpec: ")
+		targetPodSpecYAML, _ := yaml.Marshal(target.K8SPod.PodSpec)
+		fmt.Println(string(targetPodSpecYAML))
+
+		fmt.Print("\n")
+		fmt.Println("existing podSpec: ")
+		podSpecYAML, _ := yaml.Marshal(podSpec)
+		fmt.Println(string(podSpecYAML))
+
 		err := utils.UnmarshalStructToObj(target.K8SPod.PodSpec, &podSpec)
 		if err != nil {
 			return nil, nil, "", pluginserrors.Errorf(pluginserrors.BadTaskSpecification,
 				"Unable to unmarshal task k8s pod [%v], Err: [%v]", target.K8SPod.PodSpec, err.Error())
 		}
 		fmt.Print("\n")
-		fmt.Println("podSpec in BuildRawPod in case k98spod: ")
-		podSpecYAML, _ := yaml.Marshal(podSpec)
-		fmt.Println(string(podSpecYAML))
+		fmt.Println("merged podSpec: ")
+		mergedPodSpecYAML, _ := yaml.Marshal(podSpec)
+		fmt.Println(string(mergedPodSpecYAML))
 
 		// get primary container name
 		var ok bool
