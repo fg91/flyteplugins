@@ -301,8 +301,18 @@ func getBasePodTemplate(ctx context.Context, tCtx pluginsCore.TaskExecutionConte
 func MergeWithBasePodTemplate(ctx context.Context, tCtx pluginsCore.TaskExecutionContext,
 	podSpec *v1.PodSpec, objectMeta *metav1.ObjectMeta, primaryContainerName string) (*v1.PodSpec, *metav1.ObjectMeta, error) {
 
+	fmt.Print("\n")
+
+	fmt.Println("MergeWithBasePodTemplate")
+	fmt.Println("incoming podSpec", podSpec)
+	fmt.Print("\n")
 	// attempt to retrieve base PodTemplate
 	podTemplate, err := getBasePodTemplate(ctx, tCtx, DefaultPodTemplateStore)
+
+	fmt.Println("podTemplate", podTemplate)
+	fmt.Print("\n")
+	fmt.Println("primaryContainerName", primaryContainerName)
+	fmt.Print("\n")
 	if err != nil {
 		return nil, nil, err
 	} else if podTemplate == nil {
@@ -316,6 +326,8 @@ func MergeWithBasePodTemplate(ctx context.Context, tCtx pluginsCore.TaskExecutio
 		return nil, nil, err
 	}
 
+	fmt.Println("mergedPodSpec", mergedPodSpec)
+	fmt.Print("\n")
 	// merge PodTemplate PodSpec with podSpec
 	var mergedObjectMeta *metav1.ObjectMeta = podTemplate.Template.ObjectMeta.DeepCopy()
 	if err := mergo.Merge(mergedObjectMeta, objectMeta, mergo.WithOverride, mergo.WithAppendSlice); err != nil {
