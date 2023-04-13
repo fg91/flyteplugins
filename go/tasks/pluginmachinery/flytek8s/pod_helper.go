@@ -7,10 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"sigs.k8s.io/yaml"
-
-	"github.com/davecgh/go-spew/spew"
 	"github.com/flyteorg/flyteidl/gen/pb-go/flyteidl/core"
+	"sigs.k8s.io/yaml"
 
 	pluginserrors "github.com/flyteorg/flyteplugins/go/tasks/errors"
 	pluginsCore "github.com/flyteorg/flyteplugins/go/tasks/pluginmachinery/core"
@@ -134,8 +132,14 @@ func BuildRawPod(ctx context.Context, tCtx pluginsCore.TaskExecutionContext) (*v
 	}
 	primaryContainerName := ""
 
+	fmt.Print("\n")
+	fmt.Println("podSpec in BuildRawPod at the beginning: ")
+	podSpecYAML, _ := yaml.Marshal(podSpec)
+	fmt.Println(string(podSpecYAML))
+
 	switch target := taskTemplate.GetTarget().(type) {
 	case *core.TaskTemplate_Container:
+		fmt.Println("target is a container")
 		// handles tasks defined by a single container
 		c, err := ToK8sContainer(ctx, tCtx)
 		if err != nil {
@@ -160,6 +164,10 @@ func BuildRawPod(ctx context.Context, tCtx pluginsCore.TaskExecutionContext) (*v
 			return nil, nil, "", pluginserrors.Errorf(pluginserrors.BadTaskSpecification,
 				"Unable to unmarshal task k8s pod [%v], Err: [%v]", target.K8SPod.PodSpec, err.Error())
 		}
+		fmt.Print("\n")
+		fmt.Println("podSpec in BuildRawPod in case k98spod: ")
+		podSpecYAML, _ := yaml.Marshal(podSpec)
+		fmt.Println(string(podSpecYAML))
 
 		// get primary container name
 		var ok bool
@@ -167,6 +175,7 @@ func BuildRawPod(ctx context.Context, tCtx pluginsCore.TaskExecutionContext) (*v
 			return nil, nil, "", pluginserrors.Errorf(pluginserrors.BadTaskSpecification,
 				"invalid TaskSpecification, config missing [%s] key in [%v]", PrimaryContainerKey, taskTemplate.GetConfig())
 		}
+		fmt.Println("primaryContainerName: ", primaryContainerName)
 
 		// update annotations and labels
 		if taskTemplate.GetK8SPod().Metadata != nil {
@@ -264,23 +273,26 @@ func ToK8sPodSpec(ctx context.Context, tCtx pluginsCore.TaskExecutionContext) (*
 	if err != nil {
 		return nil, nil, err
 	}
-	fmt.Print("\n")
-	fmt.Println("podSpec in ToK8sPodSpec after BuildRawPod: ")
-	podSpecYAML, _ := yaml.Marshal(podSpec)
-	fmt.Println(string(podSpecYAML))
-	fmt.Println("primaryContainerName in ToK8sPodSpec after BuildRawPod: ", primaryContainerName)
-	fmt.Print("\n")
+	// Here we are already called primary and have the tolerations and podspecs
+
+	// fmt.Print("\n")
+	// fmt.Println("podSpec in ToK8sPodSpec after BuildRawPod: ")
+	// podSpecYAML, _ := yaml.Marshal(podSpec)
+	// fmt.Println(string(podSpecYAML))
+	// fmt.Println("primaryContainerName in ToK8sPodSpec after BuildRawPod: ", primaryContainerName)
+	// fmt.Print("\n")
+
 	// add flyte configuration
 	podSpec, objectMeta, err = ApplyFlytePodConfiguration(ctx, tCtx, podSpec, objectMeta, primaryContainerName)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	fmt.Print("\n")
-	fmt.Println("podSpec in ToK8sPodSpec after ApplyFlytePodConfiguration: ")
-	podSpecYAML, _ = yaml.Marshal(podSpec)
-	fmt.Println(string(podSpecYAML))
-	fmt.Print("\n")
+	// fmt.Print("\n")
+	// fmt.Println("podSpec in ToK8sPodSpec after ApplyFlytePodConfiguration: ")
+	// podSpecYAML, _ = yaml.Marshal(podSpec)
+	// fmt.Println(string(podSpecYAML))
+	// fmt.Print("\n")
 
 	return podSpec, objectMeta, nil
 }
@@ -315,25 +327,25 @@ func getBasePodTemplate(ctx context.Context, tCtx pluginsCore.TaskExecutionConte
 func MergeWithBasePodTemplate(ctx context.Context, tCtx pluginsCore.TaskExecutionContext,
 	podSpec *v1.PodSpec, objectMeta *metav1.ObjectMeta, primaryContainerName string) (*v1.PodSpec, *metav1.ObjectMeta, error) {
 
-	fmt.Print("\n")
+	// fmt.Print("\n")
 
-	fmt.Println("MergeWithBasePodTemplate")
-	fmt.Println("podSpec")
+	// fmt.Println("MergeWithBasePodTemplate")
+	// fmt.Println("podSpec")
 
-	podSpecYAML, _ := yaml.Marshal(podSpec)
-	fmt.Println(string(podSpecYAML))
+	// podSpecYAML, _ := yaml.Marshal(podSpec)
+	// fmt.Println(string(podSpecYAML))
 
 	// attempt to retrieve base PodTemplate
 	podTemplate, err := getBasePodTemplate(ctx, tCtx, DefaultPodTemplateStore)
 
-	fmt.Println("podTemplate")
-	podTemplateYAML, _ := yaml.Marshal(podTemplate)
-	fmt.Println(string(podTemplateYAML))
+	// fmt.Println("podTemplate")
+	// podTemplateYAML, _ := yaml.Marshal(podTemplate)
+	// fmt.Println(string(podTemplateYAML))
 
-	fmt.Print("\n")
-	fmt.Println("primaryContainerName", primaryContainerName)
+	// fmt.Print("\n")
+	// fmt.Println("primaryContainerName", primaryContainerName)
 
-	fmt.Print("\n")
+	// fmt.Print("\n")
 	if err != nil {
 		return nil, nil, err
 	} else if podTemplate == nil {
@@ -347,12 +359,12 @@ func MergeWithBasePodTemplate(ctx context.Context, tCtx pluginsCore.TaskExecutio
 		return nil, nil, err
 	}
 
-	fmt.Println("mergedPodSpec")
-	spew.Dump(mergedPodSpec)
-	mergedPodSpecYAML, _ := yaml.Marshal(mergedPodSpec)
-	fmt.Println(string(mergedPodSpecYAML))
+	// fmt.Println("mergedPodSpec")
+	// spew.Dump(mergedPodSpec)
+	// mergedPodSpecYAML, _ := yaml.Marshal(mergedPodSpec)
+	// fmt.Println(string(mergedPodSpecYAML))
 
-	fmt.Print("\n")
+	// fmt.Print("\n")
 	// merge PodTemplate PodSpec with podSpec
 	var mergedObjectMeta *metav1.ObjectMeta = podTemplate.Template.ObjectMeta.DeepCopy()
 	if err := mergo.Merge(mergedObjectMeta, objectMeta, mergo.WithOverride, mergo.WithAppendSlice); err != nil {
