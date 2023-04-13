@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/flyteorg/flyteidl/gen/pb-go/flyteidl/core"
 
 	pluginserrors "github.com/flyteorg/flyteplugins/go/tasks/errors"
@@ -304,14 +305,17 @@ func MergeWithBasePodTemplate(ctx context.Context, tCtx pluginsCore.TaskExecutio
 	fmt.Print("\n")
 
 	fmt.Println("MergeWithBasePodTemplate")
-	fmt.Println("incoming podSpec", podSpec)
-	fmt.Print("\n")
+	fmt.Println("podSpec")
+	spew.Dump(podSpec)
+
 	// attempt to retrieve base PodTemplate
 	podTemplate, err := getBasePodTemplate(ctx, tCtx, DefaultPodTemplateStore)
 
-	fmt.Println("podTemplate", podTemplate)
+	fmt.Println("podTemplate")
+	spew.Dump(podTemplate)
 	fmt.Print("\n")
 	fmt.Println("primaryContainerName", primaryContainerName)
+
 	fmt.Print("\n")
 	if err != nil {
 		return nil, nil, err
@@ -326,7 +330,9 @@ func MergeWithBasePodTemplate(ctx context.Context, tCtx pluginsCore.TaskExecutio
 		return nil, nil, err
 	}
 
-	fmt.Println("mergedPodSpec", mergedPodSpec)
+	fmt.Println("mergedPodSpec")
+	spew.Dump(mergedPodSpec)
+
 	fmt.Print("\n")
 	// merge PodTemplate PodSpec with podSpec
 	var mergedObjectMeta *metav1.ObjectMeta = podTemplate.Template.ObjectMeta.DeepCopy()

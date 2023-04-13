@@ -12,6 +12,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/athena v1.0.0
 	github.com/bstadlbauer/dask-k8s-operator-go-client v0.1.0
 	github.com/coocood/freecache v1.1.1
+	github.com/davecgh/go-spew v1.1.1
 	github.com/flyteorg/flyteidl v1.3.14
 	github.com/flyteorg/flytestdlib v1.0.15
 	github.com/go-test/deep v1.0.7
@@ -66,7 +67,6 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/emicklei/go-restful/v3 v3.8.0 // indirect
 	github.com/evanphx/json-patch v4.12.0+incompatible // indirect
 	github.com/fatih/color v1.13.0 // indirect
