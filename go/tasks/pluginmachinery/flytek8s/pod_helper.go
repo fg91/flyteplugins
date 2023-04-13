@@ -264,12 +264,23 @@ func ToK8sPodSpec(ctx context.Context, tCtx pluginsCore.TaskExecutionContext) (*
 	if err != nil {
 		return nil, nil, err
 	}
-
+	fmt.Print("\n")
+	fmt.Println("podSpec in ToK8sPodSpec after BuildRawPod: ")
+	podSpecYAML, _ := yaml.Marshal(podSpec)
+	fmt.Println(string(podSpecYAML))
+	fmt.Println("primaryContainerName in ToK8sPodSpec after BuildRawPod: ", primaryContainerName)
+	fmt.Print("\n")
 	// add flyte configuration
 	podSpec, objectMeta, err = ApplyFlytePodConfiguration(ctx, tCtx, podSpec, objectMeta, primaryContainerName)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	fmt.Print("\n")
+	fmt.Println("podSpec in ToK8sPodSpec after ApplyFlytePodConfiguration: ")
+	podSpecYAML, _ = yaml.Marshal(podSpec)
+	fmt.Println(string(podSpecYAML))
+	fmt.Print("\n")
 
 	return podSpec, objectMeta, nil
 }
