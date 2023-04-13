@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"sigs.k8s.io/yaml"
+
 	"github.com/davecgh/go-spew/spew"
 	"github.com/flyteorg/flyteidl/gen/pb-go/flyteidl/core"
 
@@ -306,13 +308,17 @@ func MergeWithBasePodTemplate(ctx context.Context, tCtx pluginsCore.TaskExecutio
 
 	fmt.Println("MergeWithBasePodTemplate")
 	fmt.Println("podSpec")
-	spew.Dump(podSpec)
+
+	podSpecYAML, _ := yaml.Marshal(podSpec)
+	fmt.Println(string(podSpecYAML))
 
 	// attempt to retrieve base PodTemplate
 	podTemplate, err := getBasePodTemplate(ctx, tCtx, DefaultPodTemplateStore)
 
 	fmt.Println("podTemplate")
-	spew.Dump(podTemplate)
+	podTemplateYAML, _ := yaml.Marshal(podTemplate)
+	fmt.Println(string(podTemplateYAML))
+
 	fmt.Print("\n")
 	fmt.Println("primaryContainerName", primaryContainerName)
 
@@ -332,6 +338,8 @@ func MergeWithBasePodTemplate(ctx context.Context, tCtx pluginsCore.TaskExecutio
 
 	fmt.Println("mergedPodSpec")
 	spew.Dump(mergedPodSpec)
+	mergedPodSpecYAML, _ := yaml.Marshal(mergedPodSpec)
+	fmt.Println(string(mergedPodSpecYAML))
 
 	fmt.Print("\n")
 	// merge PodTemplate PodSpec with podSpec
