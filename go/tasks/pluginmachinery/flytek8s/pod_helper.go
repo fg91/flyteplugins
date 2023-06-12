@@ -629,7 +629,7 @@ func DemystifyFailure(status v1.PodStatus, info pluginsCore.TaskInfo) (pluginsCo
 		fmt.Printf("HHERE Pod is shutting down. Reason: [%s]. Message: [%s]", code, message)
 		return pluginsCore.PhaseInfoSystemRetryableFailure(Interrupted, message, &info), nil
 	}
-
+	asdfasdf
 	//
 	// Handle known container statuses
 	//

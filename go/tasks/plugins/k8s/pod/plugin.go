@@ -2,6 +2,7 @@ package pod
 
 import (
 	"context"
+	"fmt"
 
 	pluginserrors "github.com/flyteorg/flyteplugins/go/tasks/errors"
 	"github.com/flyteorg/flyteplugins/go/tasks/logs"
@@ -174,11 +175,13 @@ func (plugin) GetTaskPhaseWithLogs(ctx context.Context, pluginContext k8s.Plugin
 		info.Logs = taskLogs
 	}
 
+	fmt.Println("HHERE Now getting the pod status")
 	phaseInfo := pluginsCore.PhaseInfoUndefined
 	switch pod.Status.Phase {
 	case v1.PodSucceeded:
 		phaseInfo, err = flytek8s.DemystifySuccess(pod.Status, info)
 	case v1.PodFailed:
+		fmt.Println("HHERE case failure")
 		phaseInfo, err = flytek8s.DemystifyFailure(pod.Status, info)
 	case v1.PodPending:
 		phaseInfo, err = flytek8s.DemystifyPending(pod.Status)
