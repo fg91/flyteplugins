@@ -58,6 +58,7 @@ func ExtractCurrentCondition(jobConditions []commonOp.JobCondition) (commonOp.Jo
 // GetPhaseInfo will return the phase of kubeflow job
 func GetPhaseInfo(currentCondition commonOp.JobCondition, occurredAt time.Time,
 	taskPhaseInfo pluginsCore.TaskInfo) (pluginsCore.PhaseInfo, error) {
+	fmt.Printf("HHERE KF Condition: [%s]", currentCondition)
 	switch currentCondition.Type {
 	case commonOp.JobCreated:
 		return pluginsCore.PhaseInfoQueued(occurredAt, pluginsCore.DefaultPhaseVersion, "JobCreated"), nil
